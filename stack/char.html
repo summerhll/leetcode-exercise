@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>stack</title>
+</head>
+
+<body>
+    <script>
+        /**
+         * 栈的应用：符号匹配
+         * 
+         */
+        const _stack = Symbol();
+        class Stack {
+            constructor() {
+                this[_stack] = []
+            }
+
+            /**
+             * 添加元素
+             * @param {*} element  要添加的元素
+             */
+            push(element) {
+                this[_stack].push(element);
+            }
+
+            /**
+             * 删除元素
+             */
+            pop() {
+                return this[_stack].pop();
+            }
+
+            /**
+             * 返回栈定元素
+             */
+            peek() {
+                return this[_stack][this[_stack].length - 1]
+            }
+
+
+            /**
+             * 是否为空栈
+             */
+            isEmpty() {
+                return this[_stack].length === 0;
+
+            }
+
+            /**
+             * 清空栈
+             */
+            clear() {
+                this[_stack] = [];
+            }
+
+
+            /**
+             * 返回栈的长度
+             */
+            getSize() {
+                return this[_stack].length;
+            }
+
+            /**
+             * 打印栈的元素
+             */
+            print() {
+                console.log(this[_stack].toString());
+
+            }
+        }
+
+
+        /**
+         * 符号匹配
+         * @str 待校验的字符串
+         */
+        function charMatch(str) {
+            let stack = new Stack();
+            for (let i = 0; i < str.length; i++) {
+                let popChar = '';
+                let curChar = str[i];
+                switch (curChar) {
+                    case '{':
+                    case '[':
+                    case '(':
+                        stack.push(curChar);
+                        break;
+                    case '}':
+                    case ']':
+                    case ')':
+                        popChar = stack.peek();
+                        if ((popChar == '{' && curChar == '}') || (popChar == '[' && curChar == ']') ||
+                            (popChar == '(' && curChar == ')')) {
+                            stack.pop();
+
+                        }else{
+                            return false;
+                        }
+                        break;
+                }
+               
+            }
+            return stack.isEmpty();
+
+        }
+
+        //测试代码
+        console.log("{([])} : " + charMatch('{([])}""'));
+        console.log("{[[])} : " + charMatch('{[[])}""'));
+    </script>
+</body>
+
+</html>
