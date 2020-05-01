@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>circle queue</title>
+</head>
+
+<body>
+    <script>
+        /**
+         * 循环队列-类实现
+         */
+        const _queue = Symbol();
+        class CircleQueue {
+            constructor(len) {
+                this[_queue] = new Array(len);
+                this.front = 0;
+                this.rear = 0;
+                this.count = 0;
+                this.length = len;
+
+            }
+
+            /**
+             * 入队
+             * @param {*} element  要添加的元素
+             */
+             enqueue(element) {
+                if(element instanceof Array){
+                    element.forEach((item, index) =>{
+                        this.enqueue(item); //添加多个元素
+                    })
+                   
+                }else{
+                    if(this.count == this.length){
+                        return false; //循环队列已满，不能添加元素
+                    }
+                    this[_queue][rear] = element;
+                    this.count ++;
+                    this.rear =  (this.rear + 1) % this.length;
+                    return false; 
+                }
+               
+            }
+
+            /**
+             * 出队
+             */
+            dequeue() {
+                if(this.count == 0){
+                    return false; //循环队列为空，不能删除元素
+                }
+                 this.count--;
+                 this.front = (this.front + 1) %  this.length;
+                 return true;
+            }
+
+           
+
+        }
+
+        //测试栈
+        let queue = new Queue()
+        queue.enqueue(1);
+        queue.enqueue(2);
+        queue.print();
+    </script>
+</body>
+
+</html>

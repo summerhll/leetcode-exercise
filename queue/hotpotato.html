@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>queue hotPotato</title>
+</head>
+
+<body>
+    <script>
+        /**
+         * 队列的应用：击鼓传花，约瑟夫环
+         */
+        const _queue = Symbol();
+        class Queue {
+            constructor() {
+                this[_queue] = []
+            }
+
+            /**
+             * 入队
+             * @param {*} element  要添加的元素
+             */
+             enqueue(element) {
+                if(element instanceof Array){
+                    this[_queue].concat(element); //添加多个元素
+                }else{
+                    this[_queue].push(element);
+                }
+               
+            }
+
+            /**
+             * 出队
+             */
+            dequeue() {
+                return this[_queue].shift();
+            }
+
+            /**
+             * 获取队列的第一个元素
+             */
+            getFront() {
+                return this[_queue][0]
+            }
+
+
+            /**
+             * 是否为空队列
+             */
+            isEmpty() {
+                return this[_queue].length === 0;
+
+            }
+
+            /**
+             * 清空队列
+             */
+            clear() {
+                this[_queue] = [];
+            }
+
+
+            /**
+             * 返回栈的长度
+             */
+            getSize() {
+                return this[_queue].length;
+            }
+
+            /**
+             * 打印栈的元素
+             */
+            print() {
+                console.log(this[_queue].toString());
+
+            }
+
+        }
+
+        //击鼓传花
+        function hotPotato(array, num){
+            let queue = new Queue();
+            //插入队列数据
+            array.forEach((item)=>{
+                queue.enqueue(item)
+            });
+
+            //击鼓传花
+            while(queue.getSize() > 1){
+                for(let i = 0; i < num - 1; i++){
+                    queue.enqueue(queue.dequeue());
+                }
+                queue.dequeue();
+            }
+            return  queue.dequeue();
+
+
+        }
+
+        //测试
+       console.log(hotPotato(['张三', "李四","王武","赵六","李白"], 7)) //赵六
+    </script>
+</body>
+
+</html>

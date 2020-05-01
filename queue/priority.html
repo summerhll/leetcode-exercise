@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>queue priority</title>
+</head>
+
+<body>
+    <script>
+        /**
+         * 优先队列
+         */
+        const _queue = Symbol();
+        class Queue {
+            constructor() {
+                this[_queue] = []
+            }
+
+            /**
+             * 入队（数值小的优先，在前面排列）
+             * @param {*} element  要添加的元素
+             */
+            enqueue(element) {
+                if(element instanceof Array){ //添加多个元素
+                    element.forEach((item, index) =>{
+                        this.enqueue(element);
+                    });
+                }else{
+                    let isAdd = false;
+                    for(let i = 0; i < this[_queue].length; i++){
+                        if(element.priority <  this[_queue][i].priority){  // 最小优先级，即将priority值小的元素插入到队列的前面
+                            this[_queue].splice(i, 0, element);
+                            isAdd = true;
+                            break;
+                        }
+                    }
+                    if(!isAdd){  // 如果元素没有插入到队列中，则默认加到队列的尾部
+                        this[_queue].push(element)
+                    }
+                   
+                }
+               
+            }
+
+            /**
+             * 出队
+             */
+            dequeue() {
+                return this[_queue].shift();
+            }
+
+            /**
+             * 获取队列的第一个元素
+             */
+            getFront() {
+                return this[_queue][0]
+            }
+
+
+            /**
+             * 是否为空队列
+             */
+            isEmpty() {
+                return this[_queue].length === 0;
+
+            }
+
+            /**
+             * 清空队列
+             */
+            clear() {
+                this[_queue] = [];
+            }
+
+
+            /**
+             * 返回栈的长度
+             */
+            getSize() {
+                return this[_queue].length;
+            }
+
+            /**
+             * 打印栈的元素
+             */
+            print() {
+                console.log(JSON.stringify(this[_queue]));
+
+            }
+
+        }
+
+        //测试栈
+        let queue = new Queue()
+        queue.enqueue({
+            name:'张三',
+            priority : 11
+
+        });
+        queue.enqueue({
+            name:'李四',
+            priority : 25
+
+        });
+        queue.enqueue({
+            name:'王武',
+            priority : 13
+
+        });
+        queue.enqueue({
+            name:'赵六',
+            priority : 2
+
+        });
+        queue.print();
+    </script>
+</body>
+
+</html>
