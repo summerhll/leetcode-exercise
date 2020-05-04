@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>doubleLinkedList</title>
+</head>
+
+<body>
+    <script>
+        /**
+         * 双链表的实现
+         */
+
+        //结点
+        class DoubleNode {
+            constructor(element) {
+                this.element = element;
+                this.next = null;
+                this.prev = null;
+            }
+        }
+
+        /**
+         * 双链表
+         */
+        class DoubleLinkedList {
+            constructor() {
+                this.head = null; //头指针
+                this.tail = null; //尾指针
+                this.length = 0;
+            }
+
+            //获取某个位置的元素,position从0开始
+            getElementAt(position) {
+                if (position < 0 || position >= this.length) return null;
+                let result = null;
+                if (position > Math.floor(this.length / 2)) { // 从后往前遍历
+                    result = this.tail;
+                    for (let i = this.length - 1; i > position; i--) {
+                        result = result.prev;
+                    }
+                } else { // 从前往后遍历
+                    result = this.head;
+                    for (let i = 0; i < position; i++) {
+                        result = result.next;
+                    }
+                }
+                return result;
+            }
+
+            //添加元素
+            append(element) {
+                let node = new DoubleNode(element);
+                if (this.length == 0) { //或者： this.head === null
+                    this.head = node;
+                    this.tail = node;
+                } else {
+                    let lastNode = this.tail;
+                    node.prev = lastNode;
+                    lastNode.next = node;
+                    this.tail = node;
+                }
+                this.length++;
+            }
+
+            /**
+             * 在某个位置添加元素,在头部、尾部、中间插入
+             * 插入成功返回true, 失败返回false
+             * 
+             * 修改链表指向，移动头尾指针
+             */
+            insert(position, element) {
+                if (position < 0 || position > this.length) { //可以在链表末尾添加元素
+                    return false;
+                }
+                let node = new DoubleNode(element);
+                if (position == 0) { //在头部插入
+                    if (this.head === null) { //  或者 this.length == 0
+                        this.head = node;
+                        this.tail = node;
+                    } else {
+                        node.next = this.head;
+                        this.head.prev = node;
+                        this.head = node;
+                    }
+                } else if (position == this.length) { //在尾部插入
+                    node.prev = this.tail;
+                    this.tail.next = node;
+                    this.tail = node;
+                } else { //在中间插入
+                    let preNode = this.getElementAt(position - 1);
+                    node.next = preNode.next;
+                    node.prev = preNode;
+                    preNode.next.prev = node;
+                    preNode.next = node;
+                  
+                }
+                this.length++;
+                return true;
+            }
+
+            /**
+             * 删除某个位置的元素， 在头部、尾部、中间删除
+             * 返回删除的元素，删除失败返回null
+             * 
+             * 要删除的元素是哪个，移动头尾指针，修改链表之间的指向
+             */
+            removeAt(position) {
+                if (position < 0 || position >= this.length) {
+                    return null;
+                }
+                let current = this.head;
+                if (position == 0) { //在头部删除
+                    this.head = current.next;
+                    this.head.prev = null;
+                    if (this.length === 1) this.tail = null;
+                } else if (position == this.length - 1) { //在尾部删除
+                    current = this.tail;
+                    this.tail = current.prev;
+                    this.tail.next = null;
+
+                } else { //在中间删除
+                    let preNode = this.getElementAt(position - 1);
+                    current = preNode.next;
+                    preNode.next = current.next;
+                    current.next.prev = preNode;
+
+                }
+                this.length--;
+                return current.element;
+            }
+
+            /**
+             * 判断链表中是否包含某个元素，并返回索引
+             * 索引从0开始，找不到返回-1
+             */
+            indexOf(element) {
+                let current = this.head;
+                for (let i = 0; i < this.length; i++) {
+                    if (current.element == element) {
+                        return i;
+                    }
+                    current = current.next;
+
+                }
+                return -1;
+
+            }
+
+            /**
+             * 删除某个元素
+             * 删除成功返回true, 失败返回false
+             */
+            remove(element) {
+                let position = this.indexOf(element);
+                return this.removeAt(position);
+            }
+
+            /**
+             * 判断链表是否为空
+             */
+            isEmpty() {
+                // return this.head == null;  //方法一：通过判断头指针是否为空来判断
+                return this.length == 0;
+            }
+
+            /**
+             * 获取链表的长度
+             */
+            getSize() {
+                return this.length;
+
+            }
+
+            /**
+             * 获取头指针
+             */
+            getHead() {
+                return this.head;
+            }
+
+            /**
+             * 获取头指针
+             */
+            getTail() {
+                return this.tail;
+            }
+
+            /**
+             * 清空链表
+             */
+            clear() {
+                this.head = null;
+                this.tail = null;
+                this.length = 0;
+            }
+
+            /**
+             * 打印
+             */
+
+            toString() {
+                let current = this.head;
+                let s = '';
+                while (current) {
+                    let next = current.next;
+                    let previous = current.prev;
+                    next = next ? next.element : 'null';
+                    previous = previous ? previous.element : 'null';
+                    s += `[element: ${current.element}, prev: ${previous}, next: ${next}] `;
+                    current = current.next;
+                }
+                return s;
+            }
+
+        }
+
+        //测试双链表
+        let doubleLinkedList = new DoubleLinkedList();
+        doubleLinkedList.append(10);
+        doubleLinkedList.append(15);
+        doubleLinkedList.append(20);
+        doubleLinkedList.append(25);
+        doubleLinkedList.append(30);
+        console.log("打印双链表：" + doubleLinkedList.toString());
+        console.log("第2个元素：" + doubleLinkedList.getElementAt(1).element);
+        console.log("第3个元素：" + doubleLinkedList.getElementAt(2).element);
+        console.log("第4个元素：" + doubleLinkedList.getElementAt(3).element);
+        doubleLinkedList.insert(0, 9);
+        doubleLinkedList.insert(4, 24);
+        doubleLinkedList.insert(7, 35);
+        console.log("打印双链表：" + doubleLinkedList.toString());
+        console.log(doubleLinkedList.removeAt(0));
+        console.log(doubleLinkedList.removeAt(1));
+        console.log(doubleLinkedList.removeAt(5));
+        console.log("打印双链表：" + doubleLinkedList.toString());
+    </script>
+</body>
+
+</html>
