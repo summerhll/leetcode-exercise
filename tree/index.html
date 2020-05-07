@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>tree</title>
+</head>
+
+<body>
+    <script>
+        /**
+         * 树
+         * 参考文章： https://www.cnblogs.com/jaxu/p/11309385.html
+         */
+
+        class TreeNode {
+            constructor(element) {
+                this.element = element;
+                this.prev = null;
+                this.next = null;
+            }
+        }
+        class Tree {
+            constructor() {
+                this.root = null; //根节点
+            }
+
+            /**
+             * 插入节点
+             */
+            insert(element) {
+                let newNode = new TreeNode(element);
+                if (this.root == null) {
+                    this.root = newNode;
+                } else {
+                    this.insertNode(newNode, this.root);
+                    //不能够在this.root为null时传递到insertNode函数中，否则this.root将会一直为null，不会改变
+                }
+
+            }
+
+            /**
+             * 插入节点
+             * @param newNode 要插入的节点元素
+             * @param rootNode 根节点或者子树的根节点
+             */
+            insertNode(newNode, rootNode) {
+                if (newNode.element < rootNode.element) {
+                    if (rootNode.prev == null) {
+                        rootNode.prev = newNode;
+                    } else {
+                        this.insertNode(newNode, rootNode.prev);
+                    }
+                } else {
+                    if (rootNode.next == null) {
+                        rootNode.next = newNode;
+                    } else {
+                        this.insertNode(newNode, rootNode.next);
+                    }
+                }
+            }
+
+            /**
+             *  先序遍历
+             *  先访问根节点，再访问左右子树
+             */
+            preOrderTraverse(callback) {
+                this.preOrderTraverseNode(this.root, callback)
+            }
+
+            /**
+             * 先序遍历递归
+             */
+            preOrderTraverseNode(node, callback) {
+                if (node != null) {   //注意判空
+                    callback(node);
+                    this.preOrderTraverseNode(node.prev, callback);
+                    this.preOrderTraverseNode(node.next, callback);
+                }
+            }
+
+            /**
+             *  中序遍历
+             *  先访问左子树，再访问根节点，最后访问右子树
+             */
+             inOrderTraverse(callback) {
+                this.inOrderTraverseNode(this.root, callback)
+            }
+
+            /**
+             * 中序遍历递归
+             */
+            inOrderTraverseNode(node, callback) {
+                if (node != null) {   //注意判空
+                    this.inOrderTraverseNode(node.prev, callback);
+                    callback(node);
+                    this.inOrderTraverseNode(node.next, callback);
+                }
+            }
+
+             /**
+             *  后序遍历
+             *  先访问左子树，再访问右子树，最后访问根节点
+             */
+             postOrderTraverse(callback) {
+                this.postOrderTraverseNode(this.root, callback)
+            }
+
+            /**
+             * 中序遍历递归
+             */
+            postOrderTraverseNode(node, callback) {
+                if (node != null) {   //注意判空
+                    this.postOrderTraverseNode(node.prev, callback);
+                    this.postOrderTraverseNode(node.next, callback);
+                    callback(node);
+                }
+            }
+
+
+            /**
+             * 查找最小值
+             */ 
+            min(){
+                if(this.root == null){
+                    return null;
+                }
+                let node = this.root;
+                while(node && node.prev){
+                    node = node.prev;
+                }
+                return node.element;
+            }
+
+          
+
+             /**
+             * 查找最大值
+             */ 
+             max(){
+                if(this.root == null){
+                    return null;
+                }
+                let node = this.root;
+                while(node && node.next){
+                    node = node.next;
+                }
+                return node.element;
+            }
+
+            
+
+
+
+            /**
+             * 查找特定值
+             * @param element 要查找的值
+             * @return true 可以找到，false 找不到
+             */
+            search(element) {
+                return this.searchNode(this.root, element);
+            }
+
+             /**
+             * 查找特定值的递归方法
+             * @param element 要查找的值
+             * @return true 可以找到，false 找不到
+             */
+             searchNode(rootNode, element) {
+                 if(rootNode == null){
+                     return false;
+                 }
+                if(rootNode.element > element){
+                    return this.searchNode(rootNode.prev, element);
+                }else if((rootNode.element < element)){
+                    return this.searchNode(rootNode.next, element);
+                }else{
+                    return true;
+                }
+            }
+
+
+
+        }
+
+        //测试树
+        let tree = new Tree();
+        tree.insert(5);
+        tree.insert(2);
+        tree.insert(1);
+        tree.insert(5);
+        tree.insert(22);
+        tree.insert(8);
+        tree.insert(7);
+        tree.insert(11);
+        tree.insert(6);
+        console.log("\n先序遍历：")
+        tree.preOrderTraverse((node) => {
+            console.log(node.element);
+        });
+        console.log("\n中序遍历：")
+        tree.inOrderTraverse((node) => {
+            console.log(node.element);
+        });
+        console.log("\n后序遍历：")
+        tree.postOrderTraverse((node) => {
+            console.log(node.element);
+        });
+
+        console.log("\n最小值：" + tree.min());
+        console.log("\n最大值：" + tree.max());
+
+        console.log("\n查找11：" + tree.search(11));
+        console.log("\n查找9：" + tree.search(9));
+
+     
+    </script>
+</body>
+
+</html>
